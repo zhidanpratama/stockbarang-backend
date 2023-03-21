@@ -1,0 +1,31 @@
+ stages:
+  - build
+  - deploy
+
+ build:
+    stage: build
+    variables:
+      GIT_STRATEGY: clone
+    script:
+      - docker login -u "admin" -p "Ijinmasuk2022" harbor.idan.com
+      - docker build -t stokbarang-backend:1v2 .
+      - docker tag stokbarang-backend:1v2 harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2
+      - docker push harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2
+    only:
+       variables:
+         - $CI_COMMIT_MESSAGE =~ /bangun/
+    tags:
+      - ci_runner
+ deploy:
+    stage: deploy
+    variables:
+      GIT_STRATEGY: clone
+    script:
+      - echo "Deployment Dimulai"
+      - ssh root@192.168.193.4 kubectl set image deployment stokbarang-backend                   stokbarang-backend=harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2 --record      
+    only:
+       variables:
+         - $CI_COMMIT_MESSAGE =~ /upload/
+         - $CI_COMMIT_MESSAGE =~ /upload & deploy/
+    tags:
+      - ci_runner
