@@ -8,9 +8,9 @@
       GIT_STRATEGY: clone
     script:
       - docker login -u "admin" -p "Ijinmasuk2022" harbor.idan.com
-      - docker build -t stokbarang-backend:1v2 .
-      - docker tag stokbarang-backend:1v2 harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2
-      - docker push harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2
+      - docker build -t stokbarang-backend:1v3 .
+      - docker tag stokbarang-backend:1v3 harbor.idan.com/stokbarang-backend/stokbarang-backend:1v3
+      - docker push harbor.idan.com/stokbarang-backend/stokbarang-backend:1v3
     only:
        variables:
          - $CI_COMMIT_MESSAGE =~ /bangun/
@@ -22,7 +22,11 @@
       GIT_STRATEGY: clone
     script:
       - echo "Deployment Dimulai"
-      - ssh root@192.168.193.4 kubectl set image deployment stokbarang-backend                   stokbarang-backend=harbor.idan.com/stokbarang-backend/stokbarang-backend:1v2 --record      
+      - docker login -u "admin" -p "Ijinmasuk2022" harbor.idan.com
+      - docker build -t stokbarang-backend:1v3 .
+      - docker tag stokbarang-backend:1v3 harbor.idan.com/stokbarang-backend/stokbarang-backend:1v3
+      - docker push harbor.idan.com/stokbarang-backend/stokbarang-backend:1v3
+      - ssh root@192.168.193.4 kubectl set image deployment -n default stokbarang-backend stokbarang-backend=harbor.idan.com/stokbarang-backend/stokbarang-backend:1v3 --record      
     only:
        variables:
          - $CI_COMMIT_MESSAGE =~ /upload/
