@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:21.6.2-bookworm-slim
 WORKDIR /stokbarang-backend
 
 RUN mkdir -p uploads
